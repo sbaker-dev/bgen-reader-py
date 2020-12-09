@@ -1,13 +1,14 @@
 import os
 import platform
 from shutil import copyfile
+from pathlib import Path
 
 import numpy as np
 import pytest
 from numpy import array, array_equal, isnan
 from numpy.testing import assert_allclose, assert_equal
 
-from bgen_reader import example_filepath, open_bgen
+from bgen_reader import example_filepath, open_bgen, read_bgen, custom_meta_path
 from bgen_reader._environment import BGEN_READER_CACHE_HOME
 from bgen_reader.test.test_bgen_reader import noread_permission
 from bgen_reader.test.write_random import _write_random
@@ -592,6 +593,24 @@ def test_threads():
                 row_count = len(bgen2.samples[slice[0]])
                 col_count = len(bgen2.ids[slice[1]])
                 assert val.shape == (row_count, col_count, 3)
+
+
+def test_custom_meta_path():
+    filepath = example_filepath2("example.bgen")
+    custom_path = Path(BGEN_READER_CACHE_HOME, "submeta")
+
+    try:
+        os.mkdir(custom_path)
+    except FileExistsError:
+        pass
+
+    custom_meta_path(custom_path)
+    read_bgen(filepath)
+    open_bgen(filepath)
+
+    assert len([path for path in Path(custom_path).iterdir()]) == 2, "Failed to write files to custom directory"
+    os.remove(Path(custom_path, filepath.name + ".metadata2.mmm"))
+    os.remove(Path(custom_path, filepath.name + ".metafile"))
 
 
 if __name__ == "__main__":

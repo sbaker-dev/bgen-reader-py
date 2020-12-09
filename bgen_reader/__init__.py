@@ -20,6 +20,7 @@ test                Verify this package's integrity.
 
 Documentation can be found at <https://github.com/limix/bgen-reader-py>.
 """
+from ._environment import custom_meta_path
 from ._bgen2 import open_bgen
 from ._dosage import allele_expectation, allele_frequency, compute_dosage
 from ._example import example_filepath
@@ -27,10 +28,11 @@ from ._metafile import create_metafile
 from ._reader import read_bgen
 from ._testit import test
 
-__version__ = "4.0.7"
+__version__ = "4.0.8"
 
 __all__ = [
     "__version__",
+    "custom_meta_path",
     "allele_expectation",
     "allele_frequency",
     "compute_dosage",
@@ -38,5 +40,5 @@ __all__ = [
     "example_filepath",
     "read_bgen",
     "open_bgen",
-    "test",
+    "test"
 ]

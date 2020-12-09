@@ -78,15 +78,24 @@ def infer_metafile_filepath(bgen_filepath: Path, suffix: str = ".metafile") -> P
     """
     Infer metafile filepath.
 
-    The resulting file name will the file name of ``bgen_filepath`` with the appended ``suffix``.
-    The root directory of the resulting filepath will be the directory of ``bgen_filepath`` if
-    the user has appropriate permissions. It falls back to the directory
+    If CUSTOM_CACHE has been altered from its default None, then the resulting file name will
+    take the root path provided, and append it with the a name constructed from the
+    ``bgen_filepath`` + ``suffix``.
 
-        BGEN_READER_CACHE_HOME / "metafile"
+    Otherwise, the root directory of the resulting filepath will be the directory of
+    ``bgen_filepath`` if the user has appropriate permissions with the resulting file name will
+    the file name of ``bgen_filepath`` with the appended `suffix``.
 
-    if necessary.
+    If the users does not have the approriate permissions in etheir case, then it will fall back
+    to writing to the directory BGEN_READER_CACHE_HOME / "metafile" if necessary.
     """
-    metafile = bgen_filepath.with_suffix(bgen_filepath.suffix + suffix)
+    from ._environment import CUSTOM_CACHE
+
+    if CUSTOM_CACHE:
+        metafile = Path(CUSTOM_CACHE, bgen_filepath.name + suffix)
+    else:
+        metafile = bgen_filepath.with_suffix(bgen_filepath.suffix + suffix)
+
     if metafile.exists():
         try:
             assert_file_readable(metafile)

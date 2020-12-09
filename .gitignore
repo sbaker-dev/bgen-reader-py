@@ -116,3 +116,6 @@ ENV/
 /bgen_reader/libzstd.dll
 /bgen_reader/test/delprofile.txt
 /bgen_reader/test/test.profile
+
+# Testing Directory
+Tests
